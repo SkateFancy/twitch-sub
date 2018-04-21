@@ -5,6 +5,7 @@
  * Date: 21.04.18
  * Time: 12:32
  */
+echo $_SERVER[''];
 if ($_GET['access_token'] != null){
     $token = $_GET['access_token'];
 
@@ -36,7 +37,7 @@ if ($_GET['access_token'] != null){
     }
     //DEPRECATED
     $Api = 'https://api.twitch.tv/kraken/users/';
-    $clientId = '';
+    $clientId = '0e3j4no7rk76ja8ibzkghumfnh110g';
     $ch = curl_init();
 
     curl_setopt_array($ch, array(
