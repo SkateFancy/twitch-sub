@@ -1,11 +1,19 @@
 <?php
+function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+{
+    $pieces = [];
+    $max = mb_strlen($keyspace, '8bit') - 1;
+    for ($i = 0; $i < $length; ++$i) {
+        $pieces []= $keyspace[random_int(0, $max)];
+    }
+    return implode('', $pieces);
+}
 /**
  * Created by PhpStorm.
  * User: felix
  * Date: 21.04.18
  * Time: 12:32
  */
-echo $_SERVER[''];
 if ($_GET['access_token'] != null){
     $token = $_GET['access_token'];
 
@@ -53,7 +61,27 @@ if ($_GET['access_token'] != null){
     curl_close($ch);
     if (strpos($responseSubscriptions, '404') == false) {
         echo 'subscribed';
+        //Started Data Input
+        include("config.php");
+        $conn = new mysqli($address . $port, $dbusername, $password, $database);
+        if ($conn->connect_error){
+            die("error while connecting to database");
+        }
+        $sqlCheck = "SELECT * FROM users WHERE username='$username'";
+        if ($conn->query($sqlCheck)->num_rows == 0){
+            $password = random_str(20);
+            $sql = "INSERT INTO users (username, token, password) VALUES ($username, $token, $password)";
+            $conn->query($sql);
+        }else{
+            $sqlGet = "SELECT password FROM users WHERE username='$username'";
+            echo $conn->query($sqlGet);
+        }
+        header("Location:settings.php?pw=" . $password);
+
+
+        $conn->close();
     }else{
         echo 'not subscribed';
     }
+
 }
