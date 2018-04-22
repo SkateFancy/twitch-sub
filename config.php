@@ -7,6 +7,6 @@
  */
 $address = "localhost";
 $port = "3306";
-$database = "twitch-sub";
+$database = "sub";
 $dbusername = "root";
-$dbpassword = "12345";
+$dbpassword = "";
