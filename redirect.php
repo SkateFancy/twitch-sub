@@ -1,4 +1,5 @@
 <?php
+include("config.php");
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -16,53 +17,11 @@ function generateRandomString($length = 10) {
  */
 if ($_GET['access_token'] != null){
     $token = $_GET['access_token'];
+    $username = twitchCommunication::getUsername($token);
 
-    $Api = 'https://api.twitch.tv/helix/users/';
-    $ch = curl_init();
-
-    curl_setopt_array($ch, array(
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer ' . $token,
-        ),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_URL => $Api
-    ));
-
-    $responseUsername = curl_exec($ch);
-    curl_close($ch);
-
-    $jsonIterator = new RecursiveIteratorIterator(
-        new RecursiveArrayIterator(json_decode($responseUsername, TRUE)),
-        RecursiveIteratorIterator::SELF_FIRST);
-    $username = "dummy";
-    $userID = "1234";
-    foreach ($jsonIterator as $key => $val) {
-        if(!is_array($val)) {
-            if ($key == "display_name"){
-                $username = $val;
-            }
-        }
-    }
-    //DEPRECATED
-    $Api = 'https://api.twitch.tv/kraken/users/';
-    $clientId = '0e3j4no7rk76ja8ibzkghumfnh110g';
-    $ch = curl_init();
-
-    curl_setopt_array($ch, array(
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: OAuth ' . $token,
-            'Client-ID: ' . $clientId
-        ),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_URL => $Api . $username . "/subscriptions/skate702"
-    ));
-
-    $responseSubscriptions = curl_exec($ch);
-    curl_close($ch);
-    if (strpos($responseSubscriptions, '404') == false) {
+    if (twitchCommunication::isSub($token, $username, $clientId, $channelSub)) {
         echo 'subscribed';
         //Started Data Input
-        include("config.php");
         $conn = new mysqli($address . ":" . $port, $dbusername, $dbpassword, $database);
         if ($conn->connect_error){
             die("error while connecting to database");

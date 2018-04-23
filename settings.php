@@ -24,8 +24,12 @@ if ($_GET['allow'] !== null) {
     $sql = "UPDATE users SET allow='$allow' WHERE password='$password'";
     $conn->query($sql);
 }
-
-echo "<form action='settings.php' method='get'><input type='checkbox' id='allow' value='$allow'><input type='text' id='pw' value='$password' hidden> <input type='submit' value='submit'></form>";
+if ($allow == 1){
+    $allow = " checked";
+}else{
+    $allow = "";
+}
+echo "<form action='settings.php' method='get'><input type='checkbox' id='allow'$allow><input type='text' id='pw' value='$password' hidden> <input type='submit' value='submit'></form>";
 
 
 $conn->close();
