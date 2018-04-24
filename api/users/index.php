@@ -1,4 +1,5 @@
 <?php
+include("../../config.php");
 /**
  * Created by PhpStorm.
  * User: felix
@@ -7,7 +8,6 @@
  */
 if ($_GET['username'] !== null){
     $username = $_GET['username'];
-    include("../../config.php");
     $conn = new mysqli($address . ":" . $port, $dbusername, $dbpassword, $database);
     if ($conn->connect_error) {
         die("error while connecting to database");
@@ -24,7 +24,7 @@ if ($_GET['username'] !== null){
 }else{
     echo "{";
     // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli($address . ":" . $port, $dbusername, $dbpassword, $database);
 // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
