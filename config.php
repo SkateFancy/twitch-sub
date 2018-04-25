@@ -13,4 +13,4 @@ $clientId = '0e3j4no7rk76ja8ibzkghumfnh110g';
 //Channel where user sub should be checked
 $channelSub = 'skate702';
 //your own website address. should be the same like in oauth settings
-$websiteURL = 'http://localhost';
+$websiteURL = 'http://localhost:25565';

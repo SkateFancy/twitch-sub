@@ -29,7 +29,7 @@ class twitchCommunication
         }
         return false;
     }
-    public static function getUsername($token){
+    public static function getUserInfo($token){
         $Api = 'https://api.twitch.tv/helix/users/';
         $ch = curl_init();
 
@@ -47,14 +47,16 @@ class twitchCommunication
         $jsonIterator = new RecursiveIteratorIterator(
             new RecursiveArrayIterator(json_decode($responseUsername, TRUE)),
             RecursiveIteratorIterator::SELF_FIRST);
-
+        $returnValue = [];
         foreach ($jsonIterator as $key => $val) {
             if(!is_array($val)) {
                 if ($key == "display_name"){
-                    return $val;
+                    $returnValue['username'] = $val;
+                }else if($key == "profile_image_url"){
+                    $returnValue['profilePicture'] = $val;
                 }
             }
         }
-        return null;
+        return $returnValue;
     }
 }

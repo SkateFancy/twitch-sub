@@ -1,5 +1,6 @@
 <?php
 include("config.php");
+include("twitchCommunication.php");
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -9,27 +10,23 @@ function generateRandomString($length = 10) {
     }
     return $randomString;
 }
-/**
- * Created by PhpStorm.
- * User: felix
- * Date: 21.04.18
- * Time: 12:32
- */
-if ($_GET['access_token'] != null){
+if (isset($_GET['access_token'])){
     $token = $_GET['access_token'];
-    $username = twitchCommunication::getUsername($token);
+    $username = twitchCommunication::getUserInfo($token)['username'];
 
     if (twitchCommunication::isSub($token, $username, $clientId, $channelSub)) {
         echo 'subscribed';
-        //Started Data Input
         $conn = new mysqli($address . ":" . $port, $dbusername, $dbpassword, $database);
+        $token = $conn->escape_string($token);
         if ($conn->connect_error){
             die("error while connecting to database");
         }
         $sqlCheck = "SELECT * FROM users WHERE username='$username'";
         if ($conn->query($sqlCheck)->num_rows < 1){
+            $profilePicture = twitchCommunication::getUserInfo($token)['profilePicture'];
             $password = generateRandomString(20);
-            $sql = "INSERT INTO users (username, token, password) VALUES ('$username', '$token', '$password')";
+            $sql = "INSERT INTO users (username, token, password, profilePicture) VALUES ('$username', '$token', '$password', '$profilePicture')";
+            $conn->query($sql);
         }else{
             $sqlGet = "SELECT password FROM users WHERE username='$username'";
             $pwResult = $conn->query($sqlGet);
@@ -40,7 +37,7 @@ if ($_GET['access_token'] != null){
 
         $conn->close();
     }else{
-        echo 'not subscribed';
+        echo '<h1>You are not subscribing' . $channelSub . ' </h1>';
     }
 
 }

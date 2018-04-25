@@ -10,7 +10,7 @@ $conn = new mysqli($address . ":" . $port, $dbusername, $dbpassword, $database);
 if ($conn->connect_error){
     die("error while connecting to database");
 }
-$sql = "CREATE TABLE `sub`.`users` ( `username` TEXT NOT NULL , `token` TEXT NOT NULL , `password` TEXT NOT NULL , `allow` BOOLEAN NOT NULL ) ENGINE = InnoDB;";
+$sql = "CREATE TABLE `$database`.`users` ( `username` TEXT NOT NULL , `token` TEXT NOT NULL , `password` TEXT NOT NULL , `allow` BOOLEAN NOT NULL, `profilePicture` TEXT ) ENGINE = InnoDB;";
 $conn->query($sql);
 $conn->close();
 ?>
